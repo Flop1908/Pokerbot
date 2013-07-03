@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BotPoker
 {
+    /// <summary>
+    /// Class for linking the information in the game and the decisional engine
+    /// </summary>
     class Situation
     {
 
@@ -40,8 +43,17 @@ namespace BotPoker
             }
         }
 
-        //TODO: Partie pour savoir les cartes que l'on a
-        //TODO: Partie pour savoir les cartes sur le tapis
+        /// <summary>
+        /// List containing the two cards of the player
+        /// </summary>
+        public List<PokerCard> playerCards;
+        private List<PokerCard> _playerCards { get { return playerCards; } set { playerCards = value; } }
+
+        /// <summary>
+        /// List containing the community cards of the turn
+        /// </summary>
+        public List<PokerCard> communityCards;
+        private List<PokerCard> _communityCards { get { return communityCards; } set { communityCards = value; } }
 
         /// <summary>
         /// how much there is in the pot
