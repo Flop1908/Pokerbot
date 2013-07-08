@@ -33,34 +33,34 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Emgu.CV">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2008">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.DebuggerVisualizers.VS2008.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.DebuggerVisualizers.VS2008.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.DebuggerVisualizers.VS2010">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.DebuggerVisualizers.VS2010.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.DebuggerVisualizers.VS2010.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.GPU">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.GPU.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.GPU.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.ML">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.ML.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.ML.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.OCR">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.OCR.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.OCR.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.Stitching">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.Stitching.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.Stitching.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.UI">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.UI.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.UI.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.CV.VideoStab">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.VideoStab.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.CV.VideoStab.dll</HintPath>
     </Reference>
     <Reference Include="Emgu.Util">
-      <HintPath>..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.Util.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\..\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\bin\Emgu.Util.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -132,70 +132,70 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cublas32_42_9.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="cudart32_42_9.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="cufft32_42_9.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="cvextern.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="npp32_42_9.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_calib3d242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_contrib242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_core242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_features2d242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_ffmpeg242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_flann242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_gpu242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_highgui242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_imgproc242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_legacy242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_ml242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_nonfree242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_objdetect242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_photo242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_stitching242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_video242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="opencv_videostab242.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

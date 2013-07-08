@@ -114,15 +114,19 @@ namespace BotPoker
             string encodedCard = "";
             switch (_Suit)
             {
+                //Trefle
                 case SuitType.Clubs:
                     encodedCard += 'c';
                     break;
+                //Pique
                 case SuitType.Spades:
                     encodedCard += 's';
                     break;
+                //Coeur
                 case SuitType.Hearts:
                     encodedCard += 'h';
                     break;
+                //Carreaux
                 case SuitType.Diamonds:
                     encodedCard += 'd';
                     break;
