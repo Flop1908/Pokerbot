@@ -19,8 +19,9 @@ namespace BotPoker
             foreach (PokerCard currentCard in _situation.playerCards)
             {
                 playerCards += currentCard.ToString();
+                playerCards += " ";
             }
-            ulong playerMask = Hand.ParseHand(playerCards);
+            ulong playerMask = Hand.ParseHand(playerCards).Trim();
             */
             ulong board = Hand.ParseHand("Ts Qs 2d");   // Partial Board
             //string des cartes du milieu
@@ -28,7 +29,8 @@ namespace BotPoker
             string boardCards = "";
             foreach (PokerCard currentCard in _situation.communityCards)
             {
-                boardCards += currentCard.ToString();
+                boardCards += currentCard.ToString().Trim();
+                boardCards += " ";
             }
             ulong board = Hand.ParseHand(boardCards);
             */
@@ -107,8 +109,6 @@ namespace BotPoker
             odds += playerWins[(int)Hand.HandTypes.FourOfAKind] / ((double)count) * 100.0;
             odds += playerWins[(int)Hand.HandTypes.StraightFlush] / ((double)count) * 100.0;
 
-
-            //foreach (double currentValue in 
             return oddsDecision(odds);
         }
 

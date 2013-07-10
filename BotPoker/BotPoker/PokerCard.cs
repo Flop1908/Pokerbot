@@ -11,7 +11,7 @@ namespace BotPoker
     class PokerCard
     {
         /// <summary>
-        /// Value of the card from 1 to 13
+        /// Value of the card from 2 to 14(Ace)
         /// </summary>
         public int cardValue;
         private int _cardValue { get { return cardValue; } set { cardValue = value; } }
@@ -91,11 +91,16 @@ namespace BotPoker
                     break;
                 case 'A':
                 case 'a':
-                    _cardValue = 1;
+                    _cardValue = 14;
                     break;
                 default:
-                    //if(!int.TryParse(input.Substring(0, input.Length - 1), out _cardValue) || _cardValue < 2 || _cardValue > 10)
-                    throw new ArgumentException();
+                    int newCardValue;
+                    if (!int.TryParse(input.Substring(0, input.Length - 1), out newCardValue) || newCardValue < 1 || newCardValue > 10)
+                        throw new ArgumentException();
+                    //special ace
+                    if (newCardValue == 1)
+                        newCardValue = 14;
+                    _cardValue = newCardValue;
                     break;
             }
         }
@@ -111,27 +116,26 @@ namespace BotPoker
 
         public string encode()
         {
-            string encodedCard = "";
+            string encodedCard="";
             switch (_Suit)
             {
                 //Trefle
                 case SuitType.Clubs:
-                    encodedCard += 'c';
+                    encodedCard = "c";
                     break;
                 //Pique
                 case SuitType.Spades:
-                    encodedCard += 's';
+                    encodedCard = "s";
                     break;
                 //Coeur
                 case SuitType.Hearts:
-                    encodedCard += 'h';
+                    encodedCard = "h";
                     break;
                 //Carreaux
                 case SuitType.Diamonds:
-                    encodedCard += 'd';
+                    encodedCard = "d";
                     break;
             }
-            encodedCard += (char)_cardValue;
             return encodedCard;
         }
 
@@ -142,21 +146,29 @@ namespace BotPoker
         public override string ToString()
         {
             string output = "";
-            if (_cardValue > 10)
+            if (_cardValue >= 10)
             {
                 switch (_cardValue)
                 {
+                    case 10:
+                        //output += "Ten";
+                        output += "T";
+                        break;
                     case 11:
-                        output += "Jack";
+                        //output += "Jack";
+                        output += "J";
                         break;
                     case 12:
-                        output += "Queen";
+                        //output += "Queen";
+                        output += "Q";
                         break;
                     case 13:
-                        output += "King";
+                        //output += "King";
+                        output += "K";
                         break;
                     case 14:
-                        output += "Ace";
+                        //output += "Ace";
+                        output += "A";
                         break;
                 }
             }
@@ -164,7 +176,8 @@ namespace BotPoker
             {
                 output += _cardValue;
             }
-            output += " of " + System.Enum.GetName(typeof(SuitType), _Suit);
+            //output += " of " + System.Enum.GetName(typeof(SuitType), _Suit);
+            output += encode();
             return output;
         }
     }
