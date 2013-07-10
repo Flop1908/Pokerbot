@@ -14,9 +14,29 @@ namespace BotPoker
         [STAThread]
         static void Main()
         {
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
+            
+        }
+        static void mainBis()
+        {
+            //lancer le canevas du jeu
+
+            //lancer une nouvelle partie
+            // A la main pour le moment
+
+            ///Début boucle
+                //attendre notre tour 
+
+                //jouer
+                    //Recupérer la situation
+                    //lancer calculon
+                    //effectuer l'action determinée
+
+                //Attendre la la fin du jeu
+            ///Fin boucle
         }
     }
 }

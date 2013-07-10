@@ -3,16 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HandEvaluator;
+using HoldemHand;
 
 namespace BotPoker
 {
     class Calculon
     {
-        string elCalculator (Situation _situation)
+        public static string elCalculator (Situation _situation)
         {
+            double odds = 0;
             ulong playerMask = Hand.ParseHand("as ks"); // Player Pocket Cards
+            //string des cartes du joueur
+            /*
+            string playerCards = "";
+            foreach (PokerCard currentCard in _situation.playerCards)
+            {
+                playerCards += currentCard.ToString();
+            }
+            ulong playerMask = Hand.ParseHand(playerCards);
+            */
             ulong board = Hand.ParseHand("Ts Qs 2d");   // Partial Board
+            //string des cartes du milieu
+            /*
+            string boardCards = "";
+            foreach (PokerCard currentCard in _situation.communityCards)
+            {
+                boardCards += currentCard.ToString();
+            }
+            ulong board = Hand.ParseHand(boardCards);
+            */
+
             // Calculate values for each hand type
             double[] playerWins = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
             double[] opponentWins = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
@@ -55,6 +75,7 @@ namespace BotPoker
             }
 
             // Print results
+            /*
             Console.WriteLine("Player Results");
             Console.WriteLine("High Card:\t{0:0.0}%",
               playerWins[(int)Hand.HandTypes.HighCard] / ((double)count) * 100.0);
@@ -74,7 +95,28 @@ namespace BotPoker
               playerWins[(int)Hand.HandTypes.FourOfAKind] / ((double)count) * 100.0);
             Console.WriteLine("Straight Flush:\t{0:0.0}%",
               playerWins[(int)Hand.HandTypes.StraightFlush] / ((double)count) * 100.0);
+            */
 
+            odds += playerWins[(int)Hand.HandTypes.HighCard] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.Pair] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.TwoPair] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.Trips] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.Straight] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.Flush] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.FullHouse] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.FourOfAKind] / ((double)count) * 100.0;
+            odds += playerWins[(int)Hand.HandTypes.StraightFlush] / ((double)count) * 100.0;
+
+
+            //foreach (double currentValue in 
+            return oddsDecision(odds);
+        }
+
+        public static string oddsDecision(double odds)
+        {
+            if (odds > 50) return "rise";
+            else if (odds > 20) return "checked";
+            else return "fold";
         }
     }
 }
