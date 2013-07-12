@@ -79,6 +79,12 @@ namespace BotPoker
         public int playerLeft;
         private int _playerLeft { get { return playerLeft; } set { playerLeft = value; } }
 
+        /// <summary>
+        /// how many player still in the game
+        /// </summary>
+        public int minimumBet;
+        private int _minimumBet { get { return minimumBet; } set { minimumBet = value; } }
+
 
     }
 }
