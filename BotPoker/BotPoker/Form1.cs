@@ -86,17 +86,17 @@ namespace BotPoker
                 TakeImageMaster();
                 CropMasterImg(5, "table", 235, 327);
                 CropMasterImg(2, "hand", 299, 223);
-
+                
                 if (firstturn)
                 {
                     for (int i = 0; i < 2; i++)
                     {
                         foreach (string filename in Directory.GetFiles(pathimg))
                         {
-                            if (CompareImg(OCRDetection(pathparam + @"\hand" + i + ".jpg"), OCRDetection(pathimg + filename)))
+                            if (CompareImg(OCRDetection(pathparam + @"\hand" + i + ".jpg"), OCRDetection(filename)))
                             {
-                                string[] file = filename.Split('.');
-                                label1.Text += file[0];
+                                string[] file = filename.Split('\\');
+                                //label1.Text += file[3].Split('.')[0];
                                 //hand.Add(new PokerCard(file[0]));
                                 break;
                             }
@@ -105,39 +105,47 @@ namespace BotPoker
                     firstturn = false;
                 }
 
-                /*for (int i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     foreach (string filename in Directory.GetFiles(pathimg))
                     {
-                        if (CompareImg(OCRDetection(pathparam + @"\table" + i + ".jpg"), OCRDetection(pathimg + filename)))
+                        if (CompareImg(OCRDetection(pathparam + @"\table" + i + ".jpg"), OCRDetection(filename)))
                         {
-                            string[] file = filename.Split('.');
+                            string[] file = filename.Split('\\');
                             //table.Add(new PokerCard(file[0]));
                             break;
                         }
                     }
-                }*/
+                }
+                /*hand.Add(new PokerCard("as"));
+                hand.Add(new PokerCard("ks"));
+                table.Add(new PokerCard("10s"));
+                table.Add(new PokerCard("js"));
+                table.Add(new PokerCard("2d"));*/
                 Situation s = new Situation();
                 s.playerCards = hand;
                 s.communityCards = table;
 
                 switch (Calculon.elCalculator(s))
                 {
-                    case "raise": Action.RaiseAction(this.Left, this.Top + 30);
+                    case "raise": 
+                        Action.RaiseAction(this.Left, this.Top + 30);
                         break;
-                    case "check": Action.CheckAction(this.Left, this.Top + 30);
+                    case "check": 
+                        Action.CheckAction(this.Left, this.Top + 30);
                         break;
-                    case "fold": Action.FoldAction(this.Left, this.Top + 30);
+                    case "fold": 
+                        Action.FoldAction(this.Left, this.Top + 30);
                         break;
 
                     default:
                         throw new ArgumentException();
                 }
 
-                /*foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
+                foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
                 {
                     File.Delete(filename);
-                }*/
+                }
                 
             }
         }
