@@ -56,14 +56,16 @@ namespace BotPoker
 
         List<PokerCard> hand = new List<PokerCard>();
         List<PokerCard> table = new List<PokerCard>();
+        List<CorrectionOCR> correction = new List<CorrectionOCR>();
 
-        string pathimg = @"C:\temp\imgPoker";
-        string pathparam = @"C:\temp\paramPoker";
+        string pathimg = @"\imgPoker";
+        string pathparam = @"\paramPoker";
 
         public Form1()
         {
             InitializeComponent();
             _ocr = new Tesseract(tessractData, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
+            CorrectionOCR();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -75,47 +77,70 @@ namespace BotPoker
 
         private void button1_Click(object sender, EventArgs e)
         {
+
+            foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
+            {
+                File.Delete(filename);
+            }
+
+
             bool firstturn = true;
             TakeImageMaster();
             CropMasterImg(1, "myturn", 295, 80);
-            //CropMasterImg(1, "check", 387, 500);
 
-            
+           
             if (CompareImg(OCRDetection(pathparam + @"\myturn1.jpg").Trim(), OCRDetection(pathimg + @"\yourturn.jpg").Trim()))
             {
                 TakeImageMaster();
                 CropMasterImg(5, "table", 235, 327);
                 CropMasterImg(2, "hand", 299, 223);
-                
+                //label2.Text = OCRDetection(pathparam + @"\myturn1.jpg") + "-" + OCRDetection(pathimg + @"\yourturn.jpg").Trim();
                 if (firstturn)
                 {
+                    // recognition player hand's cards
                     for (int i = 0; i < 2; i++)
                     {
-                        foreach (string filename in Directory.GetFiles(pathimg))
+                        foreach (CorrectionOCR c in correction)
+                        {
+                            if (c.ocr == OCRDetection(pathparam + @"\hand" + i + ".jpg"))
+                            {
+                                hand.Add(new PokerCard(c.card));
+                                break;
+                            }
+                        }
+                        /*foreach (string filename in Directory.GetFiles(pathimg))
                         {
                             if (CompareImg(OCRDetection(pathparam + @"\hand" + i + ".jpg"), OCRDetection(filename)))
                             {
                                 string[] file = filename.Split('\\');
                                 //label1.Text += file[3].Split('.')[0];
-                                //hand.Add(new PokerCard(file[0]));
+                                hand.Add(new PokerCard(file[0]));
                                 break;
                             }
-                        }
+                        }*/
                     }
                     firstturn = false;
                 }
-
+                // recognition table cards
                 for (int i = 0; i < 5; i++)
                 {
-                    foreach (string filename in Directory.GetFiles(pathimg))
+                    foreach (CorrectionOCR c in correction)
+                    {
+                        if (c.ocr == OCRDetection(pathparam + @"\table" + i + ".jpg"))
+                        {
+                            table.Add(new PokerCard(c.card));
+                            break;
+                        }
+                    }
+                    /*foreach (string filename in Directory.GetFiles(pathimg))
                     {
                         if (CompareImg(OCRDetection(pathparam + @"\table" + i + ".jpg"), OCRDetection(filename)))
                         {
                             string[] file = filename.Split('\\');
-                            //table.Add(new PokerCard(file[0]));
+                            table.Add(new PokerCard(file[0]));
                             break;
                         }
-                    }
+                    }*/
                 }
                 /*hand.Add(new PokerCard("as"));
                 hand.Add(new PokerCard("ks"));
@@ -125,7 +150,7 @@ namespace BotPoker
                 Situation s = new Situation();
                 s.playerCards = hand;
                 s.communityCards = table;
-
+                //label1.Text = "Action à faire selon l'IA : " + Calculon.elCalculator(s);
                 switch (Calculon.elCalculator(s))
                 {
                     case "raise": 
@@ -142,14 +167,11 @@ namespace BotPoker
                         break;
                 }
 
-                foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
-                {
-                    File.Delete(filename);
-                }
                 
             }
         }
 
+        // Compare images
         private bool CompareImg(string ocr1, string ocr2)
         {
             bool b = true;
@@ -167,6 +189,7 @@ namespace BotPoker
             return b;
         }
 
+        // Crop image on main image
         private void CropMasterImg(int nb, string name, int x, int y)
         {
             for (int i = 1; i <= nb; i++)
@@ -174,7 +197,7 @@ namespace BotPoker
                 Image<Bgr, Byte> imageToCrop = new Image<Bgr, byte>(@"C:\temp\paramPoker\master.jpg");
                 if (name == "myturn") imageToCrop.ROI = new Rectangle(x, y, 90, 25);
                 else if (name == "check") imageToCrop.ROI = new Rectangle(x, y, 76, 30);
-                else imageToCrop.ROI = new Rectangle(x, y, 42, 55);
+                else imageToCrop.ROI = new Rectangle(x, y, 38, 52);
                 Image<Bgr, byte> crop = imageToCrop.Copy();
                 crop.Save(@"C:\temp\paramPoker\" + name + i + ".jpg");
                 x += 45;
@@ -218,6 +241,79 @@ namespace BotPoker
             g.ReleaseHdc(bmDC);
             g.Dispose();
             bm.Save(@"C:\temp\paramPoker\master.jpg"); // now save the image
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void CorrectionOCR()
+        {
+            correction.Add(new CorrectionOCR("2s", "2Q"));
+            correction.Add(new CorrectionOCR("2c", "V)"));
+            correction.Add(new CorrectionOCR("2h", "2V"));
+            correction.Add(new CorrectionOCR("2d", "2a."));
+
+            correction.Add(new CorrectionOCR("3s", "5."));
+            correction.Add(new CorrectionOCR("3c", "3."));
+            correction.Add(new CorrectionOCR("3h", "'V"));
+            correction.Add(new CorrectionOCR("3d", "s."));
+
+            correction.Add(new CorrectionOCR("4s", "4Q"));
+            correction.Add(new CorrectionOCR("4c", "4."));
+            correction.Add(new CorrectionOCR("4h", "[4v"));
+            correction.Add(new CorrectionOCR("4d", "'.1"));
+
+            correction.Add(new CorrectionOCR("5s", "5."));
+            correction.Add(new CorrectionOCR("5c", "5."));
+            correction.Add(new CorrectionOCR("5h", "5V"));
+            correction.Add(new CorrectionOCR("5d", "5."));
+
+            correction.Add(new CorrectionOCR("6s", "6Q"));
+            correction.Add(new CorrectionOCR("6c", "6."));
+            correction.Add(new CorrectionOCR("6h", "6xV"));
+            correction.Add(new CorrectionOCR("6d", "s."));
+
+            correction.Add(new CorrectionOCR("7s", "7Q"));
+            correction.Add(new CorrectionOCR("7c", "7Q"));
+            correction.Add(new CorrectionOCR("7h", "7V"));
+            correction.Add(new CorrectionOCR("7d", "7."));
+
+            correction.Add(new CorrectionOCR("8s", "8Q"));
+            correction.Add(new CorrectionOCR("8c", "8."));
+            correction.Add(new CorrectionOCR("8h", "8V"));
+            correction.Add(new CorrectionOCR("8d", "a."));
+
+            correction.Add(new CorrectionOCR("9s", "9Q"));
+            correction.Add(new CorrectionOCR("9c", "9Q"));
+            correction.Add(new CorrectionOCR("9h", "9V"));
+            correction.Add(new CorrectionOCR("9d", "9."));
+
+            correction.Add(new CorrectionOCR("10s", "1D."));
+            correction.Add(new CorrectionOCR("10c", "l0."));
+            correction.Add(new CorrectionOCR("10h", "1DV"));
+            correction.Add(new CorrectionOCR("10d", "10."));
+
+            correction.Add(new CorrectionOCR("js", "JQ"));
+            correction.Add(new CorrectionOCR("jc", "J."));
+            correction.Add(new CorrectionOCR("jh", "JV"));
+            correction.Add(new CorrectionOCR("jd", "J."));
+
+            correction.Add(new CorrectionOCR("qs", "a I."));
+            correction.Add(new CorrectionOCR("qc", "g."));
+            correction.Add(new CorrectionOCR("qh", "(1V"));
+            correction.Add(new CorrectionOCR("qd", "ut"));
+
+            correction.Add(new CorrectionOCR("ks", "KQ"));
+            correction.Add(new CorrectionOCR("kc", "K."));
+            correction.Add(new CorrectionOCR("kh", "l"));
+            correction.Add(new CorrectionOCR("kd", "K."));
+
+            correction.Add(new CorrectionOCR("as", "l."));
+            correction.Add(new CorrectionOCR("ac", "l .."));
+            correction.Add(new CorrectionOCR("ah", "[ hV"));
+            correction.Add(new CorrectionOCR("ad", "lt"));
         }
     }
 }

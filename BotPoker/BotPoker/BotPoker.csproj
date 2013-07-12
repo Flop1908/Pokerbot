@@ -92,14 +92,13 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="Calculon.cs" />
+    <Compile Include="CorrectionOCR.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageLocations.cs" />
-    <Compile Include="ImageMatching.cs" />
     <Compile Include="PokerCard.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
