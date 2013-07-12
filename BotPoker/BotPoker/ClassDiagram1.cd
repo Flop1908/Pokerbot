@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="BotPoker.Action">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Enum Name="BotPoker.Action.MouseEventFlags" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Action.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AJAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAgAAACAAAA=</HashCode>
+      <FileName>Action.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Calculon">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQEAAAABAAAAAAAAAAAAAAAAAAADAAAAAA=</HashCode>
+      <FileName>Calculon.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Form1" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABACAAYABkICCEAAQCAAAIAAgAEEQAAAAIAQQ=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.ImageLocations">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAIAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageLocations.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.ImageMatching">
+    <Position X="0.5" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ImageMatching.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.PokerCard">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="BotPoker.PokerCard.SuitType">
+        <TypeIdentifier>
+          <NewMemberFileName>PokerCard.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AEAgAEAAAAAAgAAEAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>PokerCard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Program">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Situation">
+    <Position X="4" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAgIAACgAQCZVAARAAhACAIAA=</HashCode>
+      <FileName>Situation.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Properties.Resources">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BotPoker.Properties.Settings">
+    <Position X="2.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
