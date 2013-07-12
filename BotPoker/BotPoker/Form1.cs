@@ -52,14 +52,14 @@ namespace BotPoker
 
 
         private Tesseract _ocr;
-        const string tessractData = @"C:\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\Emgu.CV.OCR\tessdata";
+        const string tessractData = "tessdata";
 
         List<PokerCard> hand = new List<PokerCard>();
         List<PokerCard> table = new List<PokerCard>();
         List<CorrectionOCR> correction = new List<CorrectionOCR>();
 
-        string pathimg = @"\imgPoker";
-        string pathparam = @"\paramPoker";
+        string pathimg = "imgPoker";
+        string pathparam = "paramPoker";
 
         public Form1()
         {
@@ -83,8 +83,18 @@ namespace BotPoker
                 File.Delete(filename);
             }
 
-
             bool firstturn = true;
+            List<string> hand_ocr = new List<string>();
+            if (firstturn)
+            {
+                // recognition player hand's cards
+                for (int i = 0; i < 2; i++)
+                {
+                    hand_ocr.Add(OCRDetection(pathparam + @"\hand" + i + ".jpg"));
+                }
+            }
+
+            
             TakeImageMaster();
             CropMasterImg(1, "myturn", 295, 80);
 
@@ -94,17 +104,18 @@ namespace BotPoker
                 TakeImageMaster();
                 CropMasterImg(5, "table", 235, 327);
                 CropMasterImg(2, "hand", 299, 223);
-                //label2.Text = OCRDetection(pathparam + @"\myturn1.jpg") + "-" + OCRDetection(pathimg + @"\yourturn.jpg").Trim();
+                
                 if (firstturn)
                 {
                     // recognition player hand's cards
-                    for (int i = 0; i < 2; i++)
+                    foreach (string s_hand_ocr in hand_ocr)
                     {
                         foreach (CorrectionOCR c in correction)
                         {
-                            if (c.ocr == OCRDetection(pathparam + @"\hand" + i + ".jpg"))
+                            if (c.ocr == s_hand_ocr)
                             {
                                 hand.Add(new PokerCard(c.card));
+                                label1.Text += c.card + "-";
                                 break;
                             }
                         }
@@ -122,16 +133,23 @@ namespace BotPoker
                     firstturn = false;
                 }
                 // recognition table cards
+                List<string> table_ocr = new List<string>();
                 for (int i = 0; i < 5; i++)
+                {
+                    table_ocr.Add(OCRDetection(pathparam + @"\table" + i + ".jpg"));
+                }
+                foreach (string s_table_ocr in table_ocr)
                 {
                     foreach (CorrectionOCR c in correction)
                     {
-                        if (c.ocr == OCRDetection(pathparam + @"\table" + i + ".jpg"))
+                        if (c.ocr == s_table_ocr)
                         {
                             table.Add(new PokerCard(c.card));
+                            label2.Text += c.card + "-";
                             break;
                         }
                     }
+                }
                     /*foreach (string filename in Directory.GetFiles(pathimg))
                     {
                         if (CompareImg(OCRDetection(pathparam + @"\table" + i + ".jpg"), OCRDetection(filename)))
@@ -141,7 +159,6 @@ namespace BotPoker
                             break;
                         }
                     }*/
-                }
                 /*hand.Add(new PokerCard("as"));
                 hand.Add(new PokerCard("ks"));
                 table.Add(new PokerCard("10s"));
@@ -151,7 +168,7 @@ namespace BotPoker
                 s.playerCards = hand;
                 s.communityCards = table;
                 //label1.Text = "Action à faire selon l'IA : " + Calculon.elCalculator(s);
-                switch (Calculon.elCalculator(s))
+                /*switch (Calculon.elCalculator(s))
                 {
                     case "raise": 
                         Action.RaiseAction(this.Left, this.Top + 30);
@@ -165,7 +182,7 @@ namespace BotPoker
 
                     default:
                         break;
-                }
+                }*/
 
                 
             }
@@ -194,12 +211,12 @@ namespace BotPoker
         {
             for (int i = 1; i <= nb; i++)
             {
-                Image<Bgr, Byte> imageToCrop = new Image<Bgr, byte>(@"C:\temp\paramPoker\master.jpg");
+                Image<Bgr, Byte> imageToCrop = new Image<Bgr, byte>(pathparam + @"\master.jpg");
                 if (name == "myturn") imageToCrop.ROI = new Rectangle(x, y, 90, 25);
                 else if (name == "check") imageToCrop.ROI = new Rectangle(x, y, 76, 30);
                 else imageToCrop.ROI = new Rectangle(x, y, 38, 52);
                 Image<Bgr, byte> crop = imageToCrop.Copy();
-                crop.Save(@"C:\temp\paramPoker\" + name + i + ".jpg");
+                crop.Save(pathparam + name + i + ".jpg");
                 x += 45;
             }
         }
@@ -240,7 +257,7 @@ namespace BotPoker
             ReleaseDC(this.axShockwaveFlash1.Handle, srcDC);
             g.ReleaseHdc(bmDC);
             g.Dispose();
-            bm.Save(@"C:\temp\paramPoker\master.jpg"); // now save the image
+            bm.Save(pathparam + @"\master.jpg"); // now save the image
         }
 
         private void button2_Click(object sender, EventArgs e)
