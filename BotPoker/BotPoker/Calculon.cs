@@ -19,14 +19,14 @@ namespace BotPoker
             double odds = 0;
 
             //less money than we can bet
-            if (_situation.minimumBet > _situation.moneyLeft)
-                return "fold";
+            //if (_situation.minimumBet > _situation.moneyLeft)
+               // return "fold";
 
             //can i afford to bet easy
-            odds += addMoneyLeftVSMinimumBet(_situation.minimumBet, _situation.moneyLeft);
+            //odds += addMoneyLeftVSMinimumBet(_situation.minimumBet, _situation.moneyLeft);
 
             //play more agressive with less player
-            odds += addPlayerLeftOdds(_situation.playerLeft); 
+            //odds += addPlayerLeftOdds(_situation.playerLeft); 
 
             //odds of having a winning hand
             odds += addCardsOdds(_situation.playerCards, _situation.communityCards);

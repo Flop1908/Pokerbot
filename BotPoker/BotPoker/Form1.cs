@@ -139,7 +139,7 @@ namespace BotPoker
                         break;
 
                     default:
-                        throw new ArgumentException();
+                        break;
                 }
 
                 foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
