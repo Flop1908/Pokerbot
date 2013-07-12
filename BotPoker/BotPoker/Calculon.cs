@@ -12,20 +12,20 @@ namespace BotPoker
         public static string elCalculator (Situation _situation)
         {
             double odds = 0;
-            ulong playerMask = Hand.ParseHand("as ks"); // Player Pocket Cards
+            //ulong playerMask = Hand.ParseHand("as ks"); // Player Pocket Cards
             //string des cartes du joueur
-            /*
+            
             string playerCards = "";
             foreach (PokerCard currentCard in _situation.playerCards)
             {
                 playerCards += currentCard.ToString();
                 playerCards += " ";
             }
-            ulong playerMask = Hand.ParseHand(playerCards).Trim();
-            */
-            ulong board = Hand.ParseHand("Ts Qs 2d");   // Partial Board
+            ulong playerMask = Hand.ParseHand(playerCards);
+            
+            //ulong board = Hand.ParseHand("Ts Qs 2d");   // Partial Board
             //string des cartes du milieu
-            /*
+            
             string boardCards = "";
             foreach (PokerCard currentCard in _situation.communityCards)
             {
@@ -33,7 +33,7 @@ namespace BotPoker
                 boardCards += " ";
             }
             ulong board = Hand.ParseHand(boardCards);
-            */
+            
 
             // Calculate values for each hand type
             double[] playerWins = { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
@@ -114,8 +114,8 @@ namespace BotPoker
 
         public static string oddsDecision(double odds)
         {
-            if (odds > 50) return "rise";
-            else if (odds > 20) return "checked";
+            if (odds > 50) return "raise";
+            else if (odds > 20) return "check";
             else return "fold";
         }
     }

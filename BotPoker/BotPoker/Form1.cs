@@ -10,13 +10,15 @@ using System.Windows.Forms;
 using ShockwaveFlashObjects;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.IO;
 
 using Emgu.CV;
-using Emgu.CV.Structure;
 using Emgu.CV.GPU;
 using Emgu.CV.Util;
 using Emgu.CV.Features2D;
 using Emgu.CV.CvEnum;
+using Emgu.CV.OCR;
+using Emgu.CV.Structure;
 
 
 namespace BotPoker
@@ -46,55 +48,154 @@ namespace BotPoker
         public extern static int ReleaseDC(System.IntPtr hWnd, System.IntPtr hDC); //modified to include hWnd
 
         [DllImport("user32.dll")]
-        static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-        
-        [Flags]
-        public enum MouseEventFlags
-        {
-            LEFTDOWN = 0x00000002,
-            LEFTUP = 0x00000004,
-            MIDDLEDOWN = 0x00000020,
-            MIDDLEUP = 0x00000040,
-            MOVE = 0x00000001,
-            ABSOLUTE = 0x00008000,
-            RIGHTDOWN = 0x00000008,
-            RIGHTUP = 0x00000010
-        }
+        private static extern int SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
 
-        int formWidth, formHeight;      //original form size
-        //int imageWidth, imageHeight;    // resize image box when form is resized
-        Image<Bgr, Byte> imgMasterColor;
-        Image<Bgr, Byte> imgToFindColor;
-        Image<Bgr, Byte> imgCopyToFind;
-        Image<Bgr, Byte> imgResult;
+        private Tesseract _ocr;
+        const string tessractData = @"C:\Emgu\emgucv-windows-x86-gpu 2.4.2.1777\Emgu.CV.OCR\tessdata";
 
-        Bgr bgrKeyPointsColor = new Bgr(Color.Blue);
-        Bgr bgrMatchingLinesColor = new Bgr(Color.Green);
-        Bgr bgrFoundImageColor = new Bgr(Color.Red);
+        List<PokerCard> hand = new List<PokerCard>();
+        List<PokerCard> table = new List<PokerCard>();
 
-        bool masterLoaded = false;
-        bool toFindLoaded = false;
+        string pathimg = @"C:\temp\imgPoker";
+        string pathparam = @"C:\temp\paramPoker";
 
-        Stopwatch stopwatch = new Stopwatch();
         public Form1()
         {
             InitializeComponent();
-            formWidth = this.Width;
-            formHeight = this.Height;
-            //imageWidth = pbox.Width;
-            //imageHeight = pbox.Height;
+            _ocr = new Tesseract(tessractData, "eng", Tesseract.OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             axShockwaveFlash1.Movie = "http://www.miniclip.com/games/bullfrog-poker/fr/gameloader.swf?mc_gamename=Bullfrog+Poker&mc_hsname=2717&mc_iconBig=bullfrogpokerv3medicon.jpg&mc_icon=bullfrogpokerv3smallicon.jpg&mc_negativescore=0&mc_players_site=1&mc_scoreistime=0&mc_lowscore=0&mc_width=738&mc_height=575&mc_v2=0&loggedin=0&mc_loggedin=0&mc_uid=0&mc_sessid=c4ihl2j5omridevohq204ca771&mc_shockwave=0&mc_gameUrl=%2Fgames%2Fbullfrog-poker%2Ffr%2F&mc_ua=3064a31&mc_geo=NapMia&mc_geoCode=FR&vid=1&m_vid=1&channel=miniclip.preroll&m_channel=miniclip.midroll&s_content=0&mc_webmaster=0&mc_lang=fr&c=1&fn=bfpoker1.9.1.swf";
-            axShockwaveFlash1.Play();
-            
-            
+            axShockwaveFlash1.Play();           
         }
 
+
         private void button1_Click(object sender, EventArgs e)
+        {
+            bool firstturn = true;
+            TakeImageMaster();
+            CropMasterImg(1, "myturn", 295, 80);
+            //CropMasterImg(1, "check", 387, 500);
+
+            
+            if (CompareImg(OCRDetection(pathparam + @"\myturn1.jpg").Trim(), OCRDetection(pathimg + @"\yourturn.jpg").Trim()))
+            {
+                TakeImageMaster();
+                CropMasterImg(5, "table", 235, 327);
+                CropMasterImg(2, "hand", 299, 223);
+
+                if (firstturn)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        foreach (string filename in Directory.GetFiles(pathimg))
+                        {
+                            if (CompareImg(OCRDetection(pathparam + @"\hand" + i + ".jpg"), OCRDetection(pathimg + filename)))
+                            {
+                                string[] file = filename.Split('.');
+                                label1.Text += file[0];
+                                //hand.Add(new PokerCard(file[0]));
+                                break;
+                            }
+                        }
+                    }
+                    firstturn = false;
+                }
+
+                /*for (int i = 0; i < 5; i++)
+                {
+                    foreach (string filename in Directory.GetFiles(pathimg))
+                    {
+                        if (CompareImg(OCRDetection(pathparam + @"\table" + i + ".jpg"), OCRDetection(pathimg + filename)))
+                        {
+                            string[] file = filename.Split('.');
+                            //table.Add(new PokerCard(file[0]));
+                            break;
+                        }
+                    }
+                }*/
+                Situation s = new Situation();
+                s.playerCards = hand;
+                s.communityCards = table;
+
+                switch (Calculon.elCalculator(s))
+                {
+                    case "raise": Action.RaiseAction(this.Left, this.Top + 30);
+                        break;
+                    case "check": Action.CheckAction(this.Left, this.Top + 30);
+                        break;
+                    case "fold": Action.FoldAction(this.Left, this.Top + 30);
+                        break;
+
+                    default:
+                        throw new ArgumentException();
+                }
+
+                /*foreach (string filename in Directory.GetFiles(pathparam, "*.jpg", SearchOption.TopDirectoryOnly))
+                {
+                    File.Delete(filename);
+                }*/
+                
+            }
+        }
+
+        private bool CompareImg(string ocr1, string ocr2)
+        {
+            bool b = true;
+            int max = 0;
+            if (ocr1.Length > 1 && ocr2.Length > 1)
+            {
+                if (ocr1.Length > ocr2.Length) max = ocr2.Length;
+                else max = ocr1.Length;
+                for (int i = 0; i < max; i++)
+                {
+                    if (ocr1[i] != ocr2[i]) b = false;
+                }
+            }
+
+            return b;
+        }
+
+        private void CropMasterImg(int nb, string name, int x, int y)
+        {
+            for (int i = 1; i <= nb; i++)
+            {
+                Image<Bgr, Byte> imageToCrop = new Image<Bgr, byte>(@"C:\temp\paramPoker\master.jpg");
+                if (name == "myturn") imageToCrop.ROI = new Rectangle(x, y, 90, 25);
+                else if (name == "check") imageToCrop.ROI = new Rectangle(x, y, 76, 30);
+                else imageToCrop.ROI = new Rectangle(x, y, 42, 55);
+                Image<Bgr, byte> crop = imageToCrop.Copy();
+                crop.Save(@"C:\temp\paramPoker\" + name + i + ".jpg");
+                x += 45;
+            }
+        }
+
+        private string OCRDetection(string filename)
+        {
+            Bgr drawColor = new Bgr(Color.Blue);
+            try
+            {
+                Image<Bgr, Byte> image = new Image<Bgr, byte>(filename);
+                
+                using (Image<Gray, byte> gray = image.Convert<Gray, Byte>())
+                {
+                    _ocr.Recognize(gray);
+                    Tesseract.Charactor[] charactors = _ocr.GetCharactors();
+                    foreach (Tesseract.Charactor c in charactors)
+                    {
+                        image.Draw(c.Region, drawColor, 1);
+                    }
+
+                    return _ocr.GetText();
+                }
+            }
+            catch { return ""; }
+        }
+
+        public void TakeImageMaster()
         {
             Bitmap bm = new Bitmap(this.axShockwaveFlash1.Width, this.axShockwaveFlash1.Height);
             Graphics g = Graphics.FromImage(bm);
@@ -108,152 +209,7 @@ namespace BotPoker
             ReleaseDC(this.axShockwaveFlash1.Handle, srcDC);
             g.ReleaseHdc(bmDC);
             g.Dispose();
-            bm.Save(@"C:\temp\master.jpg"); // now save the image
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // Convertimg the master image to a bitmap
-            /*Bitmap masterImage = new Bitmap(@"C:\temp\master.jpg");
-
-            // Normalazing it to the grayscal mode
-            Image<Gray, Byte> normalizedMasterImage = new Image<Gray, Byte>(masterImage);
-
-            // Searching for the sample pictures in the master image
-            ImageList imagesList1 = new ImageList();
-            Image myImage = Image.FromFile(@"C:\temp\play.png");
-            imagesList1.Images.Add(myImage);*/
-
-            imgMasterColor = new Image<Bgr, byte>(@"C:\temp\master.jpg");
-            masterLoaded = true;
-
-            imgToFindColor = new Image<Bgr, byte>(@"C:\temp\play.png");
-            toFindLoaded = true;
-
-            imgCopyToFind = imgToFindColor.Copy();
-            imgCopyToFind.Draw(new Rectangle(1, 1, imgCopyToFind.Width - 3, imgCopyToFind.Height - 3), bgrFoundImageColor, 2);
-
-            PerformSurfDetection(new object(), new EventArgs());
-
-        }
-
-        private void PerformSurfDetection(object sender, EventArgs e)
-        {
-            
-            this.Text = "working...";
-            Application.DoEvents();
-            stopwatch.Restart();
-
-            HomographyMatrix homographyMatrix = null;
-            SURFDetector surfDetector = new SURFDetector(500, false);
-            Image<Gray, Byte> imgMasterGray;
-            Image<Gray, Byte> imgToFindGray;
-            VectorOfKeyPoint vkpMasterKeyPoints;
-            VectorOfKeyPoint vkpToFindKeyPoints;
-            Matrix<float> mtxMasterDescriptors;
-            Matrix<float> mtxToFindDescriptors;
-            Matrix<int> mtxMatchIndices;
-            Matrix<float> mtxDistance;
-            Matrix<Byte> mtxMask;
-            BruteForceMatcher<float> bruteForceMatcher;
-
-
-            int neighbors = 2;
-            double ratioUnique = 0.5;
-            int nonZeroElements;
-            double scaleIncrement = 1.5;
-            int rotationBin = 20;
-            double maxReprojectionError = 2.0;
-
-
-            //PointF[] ptfPointsF;
-            //Point ptPoints;
-
-            imgMasterGray = new Image<Gray, byte>(imgMasterColor.ToBitmap());
-            imgToFindGray = new Image<Gray, byte>(imgToFindColor.ToBitmap());
-
-            vkpMasterKeyPoints = surfDetector.DetectKeyPointsRaw(imgMasterGray, null);
-            mtxMasterDescriptors = surfDetector.ComputeDescriptorsRaw(imgMasterGray, null, vkpMasterKeyPoints);
-
-            vkpToFindKeyPoints = surfDetector.DetectKeyPointsRaw(imgToFindGray, null);
-            mtxToFindDescriptors = surfDetector.ComputeDescriptorsRaw(imgToFindGray, null, vkpToFindKeyPoints);
-
-            bruteForceMatcher = new BruteForceMatcher<float>(DistanceType.L2);
-            bruteForceMatcher.Add(mtxToFindDescriptors);
-
-            mtxMatchIndices = new Matrix<int>(mtxMasterDescriptors.Rows, neighbors);
-            mtxDistance = new Matrix<float>(mtxMasterDescriptors.Rows, neighbors);
-
-            bruteForceMatcher.KnnMatch(mtxMasterDescriptors, mtxMatchIndices, mtxDistance, neighbors, null);
-
-            mtxMask = new Matrix<byte>(mtxDistance.Rows, 1);
-            mtxMask.SetValue(255);
-
-            Features2DToolbox.VoteForUniqueness(mtxDistance, ratioUnique, mtxMask);
-
-            nonZeroElements = CvInvoke.cvCountNonZero(mtxMask);
-            if (nonZeroElements >= 4)
-            {
-                nonZeroElements = Features2DToolbox.VoteForSizeAndOrientation(vkpToFindKeyPoints, vkpMasterKeyPoints, mtxMatchIndices, mtxMask, scaleIncrement, rotationBin);
-                if (nonZeroElements >= 4)
-                {
-                    homographyMatrix = Features2DToolbox.GetHomographyMatrixFromMatchedFeatures(vkpToFindKeyPoints, vkpMasterKeyPoints, mtxMatchIndices, mtxMask, maxReprojectionError);
-                }
-            }
-
-            imgCopyToFind = imgToFindColor.Copy();
-            imgCopyToFind.Draw(new Rectangle(1, 1, imgCopyToFind.Width - 3, imgCopyToFind.Height - 3), bgrFoundImageColor, 2);
-
-            imgResult = imgMasterColor;
-            imgResult = imgResult.ConcateHorizontal(imgCopyToFind);
-
-            if (homographyMatrix != null)
-            {
-                // draw a rectangle along the projected model
-                Rectangle rect = imgCopyToFind.ROI;
-                PointF[] pts = new PointF[] { 
-                    new PointF(rect.Left, rect.Bottom),
-                    new PointF(rect.Right, rect.Bottom),
-                    new PointF(rect.Right, rect.Top),
-                    new PointF(rect.Left, rect.Top)
-                };
-
-                homographyMatrix.ProjectPoints(pts);
-                
-                Point[] ptPoints = { Point.Round(pts[0]), Point.Round(pts[1]), Point.Round(pts[2]), Point.Round(pts[3]) };
-                
-                imgResult.DrawPolyline(ptPoints, true, bgrFoundImageColor, 2);
-
-                int X = Convert.ToInt16((pts[0].X + pts[1].X) / 2) + this.Left;
-                int Y = Convert.ToInt16((pts[1].Y + pts[2].Y) / 2) + this.Top + 30;
-                
-                LeftClick(X, Y);
-            }
-
-            stopwatch.Stop();
-            //this.Text = "working time = " + stopwatch.Elapsed.TotalSeconds.ToString() + "sec, done ! ";
-        }
-
-        public void LeftClick(int x, int y)
-        {
-            Cursor.Position = new System.Drawing.Point(x, y);
-            mouse_event((int)(MouseEventFlags.LEFTDOWN), 0, 0, 0, 0);
-            mouse_event((int)(MouseEventFlags.LEFTUP), 0, 0, 0, 0);
-            this.Text = x.ToString() + " ----- " + y.ToString();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            imgMasterColor = new Image<Bgr, byte>(@"C:\temp\master.jpg");
-            masterLoaded = true;
-
-            imgToFindColor = new Image<Bgr, byte>(@"C:\temp\tournament.png");
-            toFindLoaded = true;
-
-            imgCopyToFind = imgToFindColor.Copy();
-            imgCopyToFind.Draw(new Rectangle(1, 1, imgCopyToFind.Width - 3, imgCopyToFind.Height - 3), bgrFoundImageColor, 2);
-
-            PerformSurfDetection(new object(), new EventArgs());
+            bm.Save(@"C:\temp\paramPoker\master.jpg"); // now save the image
         }
     }
 }
